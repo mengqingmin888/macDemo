@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>F396ED82-3DA1-48C7-8F6F-AB4903653ECE</string>
+	<key>IDESourceControlProjectName</key>
+	<string>ZhongHuaXiaoDangJia</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>FE23A2BF-389B-4EF4-846E-B8E56F20C881</key>
+		<string>svn://172.16.5.1/BJS140725/Project-A/%E4%B8%AD%E5%8D%8E%E5%B0%8F%E5%BD%93%E5%AE%B6/ZhongHuaXiaoDangJia</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>ZhongHuaXiaoDangJia.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>FE23A2BF-389B-4EF4-846E-B8E56F20C881</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectRepositoryRootDictionary</key>
+	<dict>
+		<key>FE23A2BF-389B-4EF4-846E-B8E56F20C881</key>
+		<string>svn://172.16.5.1</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>svn://172.16.5.1/BJS140725/Project-A/%E4%B8%AD%E5%8D%8E%E5%B0%8F%E5%BD%93%E5%AE%B6/ZhongHuaXiaoDangJia/ZhongHuaXiaoDangJia.xcodeproj</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>FE23A2BF-389B-4EF4-846E-B8E56F20C881</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>FE23A2BF-389B-4EF4-846E-B8E56F20C881</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ZhongHuaXiaoDangJia</string>
+		</dict>
+	</array>
+</dict>
+</plist>

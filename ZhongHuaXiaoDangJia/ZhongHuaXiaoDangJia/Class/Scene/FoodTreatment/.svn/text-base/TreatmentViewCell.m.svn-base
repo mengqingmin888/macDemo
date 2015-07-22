@@ -1,0 +1,79 @@
+//
+//  DiseaseViewCell.m
+//  ZhongHuaXiaoDangJia
+//
+//  Created by lanou3g on 14-9-19.
+//  Copyright (c) 2014年 夏东. All rights reserved.
+//
+
+#import "TreatmentViewCell.h"
+#import "FoodTreatment.h"
+
+@implementation TreatmentViewCell
+
+
+- (void)dealloc
+{
+    [_diseaseLabel release];
+    [_diseaseView release];
+    self.foodTreatment = nil;
+    [super dealloc];
+    
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        // Initialization code
+        [self setupSubviews];
+    }
+    return self;
+}
+
+- (void)setupSubviews
+{
+    
+
+    
+    _diseaseView  =  [[UIImageView  alloc] initWithImage:[UIImage imageNamed:@"缺省背景图.png"]];
+    _diseaseView.frame = CGRectMake(15,15, 50, 50);
+//        _diseaseView.backgroundColor = [UIColor grayColor];
+    [self.contentView addSubview:_diseaseView];
+ 
+    
+    _diseaseLabel = [[UILabel alloc] initWithFrame:CGRectMake(75, 30, 200, 20)];
+    _diseaseLabel.text = @"儿科";
+    [self.contentView addSubview:_diseaseLabel];
+    _diseaseLabel.font = [UIFont systemFontOfSize:15];
+    _diseaseLabel.textColor = [UIColor grayColor];
+    
+
+}
+
+- (void)setFoodTreatment:(FoodTreatment *)foodTreatment
+{
+    if (_foodTreatment != foodTreatment) {
+        [_foodTreatment release];
+        _foodTreatment = [foodTreatment retain];
+    }
+    
+   _diseaseLabel.text = foodTreatment.diseaseName;
+    
+    
+}
+
+
+- (void)awakeFromNib
+{
+    // Initialization code
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+{
+    [super setSelected:selected animated:animated];
+
+    // Configure the view for the selected state
+}
+
+@end

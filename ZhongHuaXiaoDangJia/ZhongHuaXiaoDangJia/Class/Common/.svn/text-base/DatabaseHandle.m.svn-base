@@ -1,0 +1,198 @@
+//
+//  DatabaseHandle.m
+//  ZhongHuaXiaoDangJia
+//
+//  Created by lanou3g on 14-9-23.
+//  Copyright (c) 2014年 夏东. All rights reserved.
+//
+
+#import "DatabaseHandle.h"
+#import "FoodModel.h"
+#import <sqlite3.h>
+#import "FileHandle.h"
+
+
+@implementation DatabaseHandle
+
+static  DatabaseHandle  * handle = nil;
+
++(DatabaseHandle *)shareInstance
+{
+    if (nil == handle) {
+        handle = [[DatabaseHandle alloc] init];
+        [handle openDB];
+    }
+
+    return handle;
+}
+
+static  sqlite3  *db = nil;
+
+//打开数据库
+- (void)openDB
+{
+    if (db != nil) {
+        return;
+    }
+//    数据库存储在沙盒中的caches文件夹下
+    NSString  *dbPath = [[FileHandle shareInstance] databaseFilePath:kDatabaseName];
+//    打开数据库
+    int result = sqlite3_open([dbPath UTF8String], &db);
+    
+    if (result == SQLITE_OK) {
+        
+        
+//        创建表的sql语句
+        NSString  * createSql = @"CREATE TABLE FoodFavoriteList (vegetable_id TEXT PRIMARY KEY, name TEXT, data BLOB)";
+//        执行sql语句
+        sqlite3_exec(db, [createSql UTF8String], NULL, NULL, NULL);
+    }
+    
+}
+
+//关闭数据库
+- (void)closeDB
+{
+
+    int result = sqlite3_close(db);
+    if (result == SQLITE_OK) {
+        
+        
+        db = nil;
+        
+    }
+    
+    
+
+}
+
+//添加新的菜品
+- (void)insertNewFood : (FoodModel *)foodModel
+{
+//打开数据库
+    [self openDB];
+
+    sqlite3_stmt  * stmt = nil;
+    
+    NSString  * sql = @"insert into FoodFavoriteList (vegetable_id,name,data) values (?,?,?)";
+    
+    int result = sqlite3_prepare_v2(db, [sql UTF8String] , -1, &stmt, NULL);
+    
+    if (result == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, [foodModel.vegetable_id UTF8String], -1, NULL);
+        sqlite3_bind_text(stmt, 2, [foodModel.name UTF8String], -1, NULL);
+        
+        NSString  * archiverKey = [NSString stringWithFormat:@"%@%@",kFoodArchiverKey,foodModel.vegetable_id];
+        NSData  *data = [[FileHandle shareInstance] dataOfArchiverObject:foodModel forKey:archiverKey];
+        sqlite3_bind_blob(stmt, 3, [data bytes], (int)[data length], NULL);
+        
+        sqlite3_step(stmt);
+        
+    }
+    
+    sqlite3_finalize(stmt);
+    
+}
+
+
+//删除某个菜品
+- (void)deleteFood : (FoodModel *)foodModel
+{
+
+    [self openDB];
+    sqlite3_stmt  * stmt = nil;
+    NSString  * sql = @"delete from FoodFavoriteList where vegetable_id = ?";
+    int result = sqlite3_prepare_v2(db, [sql UTF8String], -1, &stmt, NULL);
+    if (result == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, [foodModel.vegetable_id UTF8String], -1, NULL);
+        sqlite3_step(stmt);
+    }
+    sqlite3_finalize(stmt);
+
+}
+
+
+//获取某个菜品的对象
+- (FoodModel *)selectFoodModelWithID : (NSString *)vegetable_id
+{
+    [self openDB];
+    sqlite3_stmt  * stmt = nil;
+
+    NSString  * sql = @"select data from FoodFavoriteList where vegetable_id = ?";
+
+    int result = sqlite3_prepare_v2(db, [sql UTF8String], -1, &stmt, NULL);
+    
+    FoodModel  * foodModel = nil;
+    if (result == SQLITE_OK) {
+        
+        sqlite3_bind_text(stmt, 1, [vegetable_id UTF8String], -1, NULL);
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            
+            NSData  * data = [NSData dataWithBytes:sqlite3_column_blob(stmt, 0) length:sqlite3_column_bytes(stmt, 0)];
+            
+            NSString  * archiverKey = [NSString stringWithFormat:@"%@%@",kFoodArchiverKey,vegetable_id];
+            foodModel = [[FileHandle shareInstance] unarchiverObject:data forKey:archiverKey];
+            
+        }
+   
+    }
+    sqlite3_finalize(stmt);
+    
+    return foodModel;
+    
+}
+
+
+//获取所有菜品
+- (NSArray *)selectAllActivity
+{
+
+    [self openDB];
+
+    sqlite3_stmt  * stmt = nil;
+    
+    NSString  *sql = @"select vegetable_id,data from FoodFavoriteList";
+    
+    int result = sqlite3_prepare_v2(db, [sql UTF8String], -1, &stmt, NULL);
+    
+    NSMutableArray  * foodArray = [NSMutableArray arrayWithCapacity:40];
+    if (result == SQLITE_OK) {
+        
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            NSString  * vegetable_id = [NSString stringWithUTF8String:(const char *)sqlite3_column_text(stmt, 0)];
+            NSData  * data = [NSData dataWithBytes:sqlite3_column_blob(stmt, 1) length:sqlite3_column_bytes(stmt, 1)];
+            
+            NSString  * archiverKey = [NSString stringWithFormat:@"%@%@",kFoodArchiverKey,vegetable_id];
+            
+            FoodModel  *foodModel = [[FileHandle shareInstance] unarchiverObject:data forKey:archiverKey];
+            
+            [foodArray addObject:foodModel];
+            
+        }
+        
+    }
+    
+    sqlite3_finalize(stmt);
+    
+    return foodArray;
+}
+
+
+
+//判断菜品是否被收藏
+
+- (BOOL)isFavoriteFoodModelWithID : (NSString *)vegetable_id
+{
+
+    FoodModel  *foodModel = [self selectFoodModelWithID:vegetable_id];
+    if (foodModel == nil) {
+        return NO;
+    }
+
+    return YES;
+}
+
+
+
+
+@end
